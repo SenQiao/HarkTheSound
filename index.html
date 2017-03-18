@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NameThatSong</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="placeHolder_Container">
+</div>
+
+
+</body>
+<script type="text/javascript">
+	arrayAnswer=[];
+	arrayName=[];
+	arrayPicture=[];
+	arrayPrompt=[];
+	count=0;
+	//extracting
+
+//selection
+$(document).keydown(function (e) {
+	//left
+    if (e.keyCode == 37) {
+    	e.preventDefault()
+        alert('left key is pressed');
+    }
+    //up
+    if (e.keyCode == 38) {
+    	e.preventDefault()
+        alert('up key is pressed');
+    }
+    //right
+    if (e.keyCode == 39) {
+    	e.preventDefault()
+        alert('right key is pressed');
+    }
+    //down
+    if (e.keyCode == 40) {
+    	e.preventDefault()
+        alert('down key is pressed');
+    }
+    });
+
+	$.ajax({
+	  type: "GET",
+	  url: "NameThatSong.json",
+	  dataType: "json",
+	  success: function(data){
+
+	  	// alert(data.Things);
+	  	for (i in data.Things){
+
+	  	arrayAnswer[count]=data.Things[i].Answer
+		arrayName[count]=data.Things[i].Name
+		arrayPicture[count]=data.Things[i].Picture
+		arrayPrompt[count]=data.Things[i].Prompt
+		count=count+1;
+	  	}
+	  	TestBegins();
+	  }
+
+	  //create quiz
+
+	  //arrow key selection
+	  	});
+	function TestBegins(){
+		//display image
+		var table="<table border=1>"
+		// var newInstance = $(document.createElement('table'));
+		for(i=0; i<count;i++){
+			table=table+"<tr id='1'>"
+
+			table=table+"<td class='songLocat'>"
+			table=table+arrayPrompt[i].toString();
+			table=table+"</td>"
+////////////////////////////// Choices
+			var date = new Date();
+			var randomz=date.getSeconds() % 4;
+			var existAnswer=false
+			var total=0;
+			//psedorandom order
+			// alert(randomz);
+			while(total<count){
+				if(existAnswer==false && randomz==0){
+					table=table+"<td class='answerTrue' >"
+					table=table+arrayAnswer[i].toString();
+					table=table+"</td>"
+					existAnswer=true;
+					total=total+1;
+				}
+				else{
+					table=table+"<td class='answerFalse' >"
+					
+					j=(i+randomz) % 4;
+					
+					table=table+arrayAnswer[j].toString();
+					table=table+"</td>"
+					total=total+1;
+				}
+				randomz=(randomz+1)% 4
+				total=total+1;
+			}
+////////////////////
+			table=table+"<td class='image'>"
+			table=table+arrayPicture[i].toString();
+			table=table+"</td>"
+
+			table=table+"<td class='name'>"
+			table=table+arrayName[i].toString();
+			table=table+"</td>"
+
+			table=table+"</tr>"
+		}
+		table=table+"</table>"
+		// newInstance.appendTo('#placeHolder_Container');
+		$("#placeHolder_Container").append(table);
+	}
+
+
+</script>
+</html>

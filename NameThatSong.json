@@ -1,0 +1,67 @@
+{
+    "Between_Rounds": [
+        "Now try these!"
+    ], 
+    "Choices_per_round": 4, 
+    "Description": "A New Hark the Sound Song guessing game.", 
+    "Name": "NameThatSong", 
+    "Pair_answers_with_prompts": false, 
+    "Question": [
+        "Can you guess the Song?"
+    ], 
+    "Repeat_rounds": false, 
+    "Things": [
+        {
+            "Answer": [
+                "Amazing Grace"
+            ], 
+            "Hint": [], 
+            "Name": "Amazing_Grace", 
+            "Picture": [
+                "images/Songs/Amazing_Grace.png"
+            ], 
+            "Prompt": [
+                "Sounds/Songs/Amazing_Grace.mp3"
+            ]
+        }, 
+        {
+            "Answer": [
+                "Word Of God Speak"
+            ], 
+            "Hint": [], 
+            "Name": "Word_Of_God_Speak", 
+            "Picture": [
+                "images/Songs/Word_Of_God_Speak.png"
+            ], 
+            "Prompt": [
+                "Sounds/Songs/Word_Of_God_Speak.mp3"
+            ]
+        }, 
+        {
+            "Answer": [
+                "Who Am I"
+            ], 
+            "Hint": [], 
+            "Name": "Who_Am_I", 
+            "Picture": [
+                "images/Songs/Who_Am_I.png"
+            ], 
+            "Prompt": [
+                "Sounds/Songs/Who_Am_I.mp3"
+            ]
+        },  
+        {
+            "Answer": [
+                "How Great Is Our God"
+            ], 
+            "Hint": [], 
+            "Name": "How_Great_Is_Our_God", 
+            "Picture": [
+                "images/Songs/How_Great_Is_Our_God.png"
+            ], 
+            "Prompt": [
+                "Sounds/Songs/How_Great_Is_Our_God.mp3"
+            ]
+        }
+    ]
+}
