@@ -9,7 +9,6 @@
 <div id="placeHolder_Container">
 </div>
 
-
 </body>
 <script type="text/javascript">
 	arrayAnswer=[];
@@ -19,29 +18,6 @@
 	count=0;
 	//extracting
 
-//selection
-$(document).keydown(function (e) {
-	//left
-    if (e.keyCode == 37) {
-    	e.preventDefault()
-        alert('left key is pressed');
-    }
-    //up
-    if (e.keyCode == 38) {
-    	e.preventDefault()
-        alert('up key is pressed');
-    }
-    //right
-    if (e.keyCode == 39) {
-    	e.preventDefault()
-        alert('right key is pressed');
-    }
-    //down
-    if (e.keyCode == 40) {
-    	e.preventDefault()
-        alert('down key is pressed');
-    }
-    });
 
 	$.ajax({
 	  type: "GET",
@@ -67,41 +43,70 @@ $(document).keydown(function (e) {
 	  	});
 	function TestBegins(){
 		//display image
+		// for(i=0;i<4;i++){
+		// 	alert(arrayAnswer[i]);
+		// }
+		// alert(arrayAnswer[4]);
 		var table="<table border=1>"
 		// var newInstance = $(document.createElement('table'));
+		// alert(count);
 		for(i=0; i<count;i++){
-			table=table+"<tr id='1'>"
+			table=table+"<tr>"
 
 			table=table+"<td class='songLocat'>"
 			table=table+arrayPrompt[i].toString();
 			table=table+"</td>"
 ////////////////////////////// Choices
-			var date = new Date();
-			var randomz=date.getSeconds() % 4;
-			var existAnswer=false
 			var total=0;
-			//psedorandom order
-			// alert(randomz);
-			while(total<count){
-				if(existAnswer==false && randomz==0){
-					table=table+"<td class='answerTrue' >"
-					table=table+arrayAnswer[i].toString();
-					table=table+"</td>"
-					existAnswer=true;
-					total=total+1;
+			var randomz=[];
+			var countArray=0;
+			// alert(randomz[0]);
+			while(countArray<4){
+				test11=Math.floor((Math.random() * 4));
+				if(randomz.includes(test11)){
+					a='a';
 				}
 				else{
-					table=table+"<td class='answerFalse' >"
-					
-					j=(i+randomz) % 4;
-					
-					table=table+arrayAnswer[j].toString();
-					table=table+"</td>"
-					total=total+1;
+					randomz.push(test11);
+					// alert(test11);
+					if(test11==0){
+						table=table+"<td class='answerTrue' >"
+						table=table+arrayAnswer[i].toString();
+						table=table+"</td>"
+					}
+					else{
+						// try{
+							if(i+test11<count){
+								table=table+"<td class='answerFalse1' >"
+								table=table+arrayAnswer[i+test11].toString();
+								
+								table=table+"</td>"
+							}
+							else if(test11>i){
+									table=table+"<td class='answerFalse2' >"
+									table=table+arrayAnswer[test11-i].toString();
+									
+									table=table+"</td>"
+							}
+							else{
+									table=table+"<td class='answerFalse3' >"
+									table=table+arrayAnswer[i-test11].toString();
+									
+									table=table+"</td>"
+							}
+						// }
+						
+					}
+					countArray=countArray+1;
 				}
-				randomz=(randomz+1)% 4
-				total=total+1;
+				// countArray=countArray+1;
 			}
+			//psedorandom order
+			// alert(randomz);
+			// alert('out');
+		
+			
+			
 ////////////////////
 			table=table+"<td class='image'>"
 			table=table+arrayPicture[i].toString();
@@ -116,8 +121,62 @@ $(document).keydown(function (e) {
 		table=table+"</table>"
 		// newInstance.appendTo('#placeHolder_Container');
 		$("#placeHolder_Container").append(table);
+
+		createButton();
+
 	}
+	function createButton(){
+		button = "<button type='button' id='nextz'>SUBMIT</button>"
+		$("#placeHolder_Container").append(button);
+	}
+	Qcount=0;
+	$(document).ready(function() {
 
 
+
+
+		//selection
+		$(document).keydown(function (e) {
+			//left
+		    if (e.keyCode == 37) {
+		    	e.preventDefault()
+		        alert('left key is pressed');
+		    }
+		    //up
+		    if (e.keyCode == 38) {
+		    	e.preventDefault()
+		        alert('up key is pressed');
+		    }
+		    //right
+		    if (e.keyCode == 39) {
+		    	e.preventDefault()
+		        alert('right key is pressed');
+		    }
+		    //down
+		    if (e.keyCode == 40) {
+		    	e.preventDefault()
+		        alert('down key is pressed');
+		    }
+		});
+
+
+		$("#nextz").click(function() {
+
+ var speech = new SpeechSynthesisUtterance('hello baby');
+    speech.lang = 'en-US';
+    window.speechSynthesis.speak(speech);
+
+			try{
+			$("#newaudio").remove();
+			}
+			catch(err){
+				//first time
+				//do nothing
+			}
+			prompt="<audio id='newaudio' autoplay><source src='"+arrayPrompt[Qcount]+"' type='audio/mpeg'></audio> ";
+	  		Qcount=Qcount+1;
+	  		$("#placeHolder_Container").append(prompt);
+		});
+	});
 </script>
 </html>
