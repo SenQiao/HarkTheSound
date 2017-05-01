@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CreateJson</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="MainContainer">
+	<form action="createJson.php" method="post">
+	What is This Called?: <input type="text" name="TypeofSongName"><br>
+	Questions:
+	<div id='canDouble' class='canDouble'>
+
+	Song Name: <input type="text" name="Answer[]"><br>
+	Youtube Url: <input type="text" name="Prompt[]" id="Prompt">
+	Start Time: <input type="text" name="Timez[]" id="Prompt" value=0>
+	<br>
+	Song Name: <input type="text" name="Answer[]"><br>
+	Youtube Url: <input type="text" name="Prompt[]" id="Prompt">
+	Start Time: <input type="text" name="Timez[]" id="Prompt" value=0>
+	<br>
+
+
+	Song Name: <input type="text" name="Answer[]"><br>
+	Youtube Url: <input type="text" name="Prompt[]" id="Prompt">
+	Start Time: <input type="text" name="Timez[]" id="Prompt" value=0>
+	<br>
+
+	Song Name: <input type="text" name="Answer[]"><br>
+	Youtube Url: <input type="text" name="Prompt[]" id="Prompt">
+	Start Time: <input type="text" name="Timez[]" id="Prompt" value=0>
+	<br>
+	</div>
+<button type="button" onclick="createMore()">+</button><br>
+
+	<input type="submit">
+	</form>
+</div>
+
+</body>
+
+<script type="text/javascript">
+function createMore() {
+    var x = document.createElement("INPUT");
+    x.setAttribute("type", "text");
+    x.setAttribute("name", "Answer[]");
+    var y = document.createElement("INPUT");
+    y.setAttribute("name", "Prompt[]");
+    y.setAttribute("type", "text");
+    var z = document.createElement("INPUT");
+    z.setAttribute("name", "Timez[]");
+    z.setAttribute("type", "text");
+    z.setAttribute("value", 0);
+    $('#canDouble').append('Song Name:');
+    $('#canDouble').append(x);
+    $('#canDouble').append('<br>');
+    $('#canDouble').append('Youtube Url:');
+    $('#canDouble').append(y);
+    $('#canDouble').append('StartTime:');
+    $('#canDouble').append(z);
+    $('#canDouble').append('<br>');
+
+}
+
+
+
+</script>
+
+</html>

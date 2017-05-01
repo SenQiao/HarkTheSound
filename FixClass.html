@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NameThatSong</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+
+</head>
+<body>
+
+WhichOne: <input type="text" id="songId"><br>
+<button type="button" onclick="beginAjax()">Select</button>
+
+<div id="placeHolder_Container">
+</div>
+
+
+<!-- <object id='video' data='https://www.youtube.com/embed/qQrgto184Tk?autoplay=1&start=120'></object> -->
+<div display='none' id="player"></div>
+
+
+</body>
+<script type="text/javascript">
+
+
+		 var tag = document.createElement('script');
+
+	      tag.src = "https://www.youtube.com/iframe_api";
+	      var firstScriptTag = document.getElementsByTagName('script')[0];
+	      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+	      // 3. This function creates an <iframe> (and YouTube player)
+	      //    after the API code downloads.
+
+	      $('#player').hide();
+
+	      var player;
+	      function onYouTubeIframeAPIReady() {
+		        player = new YT.Player('player', {
+		          height: '500',
+		          width: '500',
+		          videoId: '',
+		          events: {
+		            'onReady': onPlayerReady,
+		            'onStateChange': onPlayerStateChange
+		          }
+		        });
+	      }
+
+	      // 4. The API will call this function when the video player is ready.
+	      function onPlayerReady(event) {
+	        event.target.playVideo();
+	      }
+
+	      // 5. The API calls this function when the player's state changes.
+	      //    The function indicates that when playing a video (state=1),
+	      //    the player should play for six seconds and then stop.
+	      var done = false;
+	      function onPlayerStateChange(event) {
+		        if (event.data == YT.PlayerState.PLAYING && !done) {
+		          // setTimeout(stopVideo, 6000);
+		          done = true;
+		        }
+	      }
+	      function stopVideo() {
+	        player.stopVideo();
+	      }
+
+	       function playVideo() {
+	        player.playVideo();
+	      }
+
+
+
+
+	arrayAnswer=[];
+	arrayTimed=[];
+	arrayName=[];
+	arrayPicture=[];
+	arrayPrompt=[];
+	count=0;
+	arrayPossibleAnswers=[];
+	//extracting
+// url: "NameThatSong.json",
+function beginAjax(){
+	var obtain=$('#songId').val();
+	url=obtain+'.json';
+	// alert(url)
+	$.ajax({
+	  type: "GET",
+	  url: url,
+	  dataType: "json",
+	  success: function(data){
+
+	  	// alert(data.Things);
+	  	randoma=Math.floor((Math.random() * 4));
+	  	for (i in data.Things){
+	  		index=(count+randoma)%(data.Things).length
+	  		// alert(index);
+		  	arrayAnswer[index]=data.Things[i].Answer[0];
+		  	arrayTimed[index]=data.Things[i].Answer[1];
+			arrayName[index]=data.Things[i].Name
+			arrayPicture[index]=data.Things[i].Picture
+			arrayPrompt[index]=data.Things[i].Prompt
+
+			count=count+1;
+
+	  	}
+	  	TestBegins();
+	  },
+	  error: function(e){
+	  	alert('not gamename found');
+	  }
+
+	  //create quiz
+	})
+}
+//audio class only handling audio, play this sound, mainage quueue move it throught the queue
+
+//game logic/ json file in model
+
+//sound view
+
+//user controller js  UI
+
+	  //arrow key selection
+
+	// function keyeventManager(){
+		
+	// }
+
+	function soundPlayer(){
+		// constructor(){
+
+		// }
+		// this can be a dictionary; or 2 arrays
+		this.queue=[];
+		this.type=[];
+		this.timed=[];
+		this.arrayPossibleAnswers=[];
+		this.Qcount=0;
+		this.currentType='';
+		// this.speech=new SpeechSynthesisUtterance('');
+
+
+		this.addAnswers=function(arrayofAnswer){
+			this.arrayPossibleAnswers=arrayofAnswer;
+		}
+		this.addTime= function(sec){
+			this.timed.push(sec);
+		}
+
+		this.addSpeech= function(string1){
+			this.queue.push(string1);
+			this.type.push('Speech');
+		}
+		this.addSong= function(string2){
+			this.queue.push(string2);
+			this.type.push('Song');
+		}
+		this.setTypeNow =function(possibleType){
+			this.currentType=possibleType;
+		}
+
+		this.diplayType = function(){
+			return this.currentType;
+		}
+
+		this.pause= function(){};
+
+		this.play= function(){
+		
+			window.speechSynthesis.cancel();
+			this.setTypeNow(this.type[0]);
+			if(this.type[0]=='Speech'){
+				window.speechSynthesis.cancel();
+				var speech = new SpeechSynthesisUtterance();
+				speech.text=this.queue[0];
+				speech.lang = 'en-US';
+				window.speechSynthesis.speak(speech);
+				// alert(this.queue[0]);
+				// this.queue.shift();
+				// this.type.shift();
+				// // var self=speech;
+				var self=this;
+				// after speech finish play next
+			
+				speech.onend = function(event) {
+					//callback
+					// alert('here2');
+	    			self.play();
+	  			}
+
+
+			}
+			else if (this.type[0]=='Song'){
+				// try{
+				// 	$("#newaudio").remove();
+				// }
+				// catch(err){
+				// 	//first time
+				// 	//do nothing
+				// }
+				// prompt="<audio id='newaudio' autoplay><source src='"+this.queue[0]+"' type='audio/mpeg'></audio> ";
+		  // 		$("#placeHolder_Container").append(prompt);
+
+		  		player.playVideo();
+				$('#player').show();
+				player.loadVideoById(this.queue[0][0].toString());
+				// player.seekTo(60);
+				tempTime=this.timed[0];
+				if(tempTime.includes(':')){
+					tempTimeArray=tempTime.split(':');
+					tempTime=parseInt(tempTimeArray[0]*60)+parseInt(tempTimeArray[1]);
+				}
+				// alert(tempTime);
+				player.seekTo(parseInt(tempTime));
+
+				$('#player').hide();
+			}
+
+			else{
+				// alert('Finished');
+				window.speechSynthesis.cancel();
+				var speech = new SpeechSynthesisUtterance();
+				speech.text='You have finished this game, Great Job';
+				speech.lang = 'en-US';
+				window.speechSynthesis.speak(speech);
+			}
+		
+		}
+
+
+	}
+	function TestBegins(){
+		//display image
+		// for(i=0;i<4;i++){
+		// 	alert(arrayAnswer[i]);
+		// }
+		// alert(arrayAnswer[4]);
+		var table="<table border=1>"
+		// var newInstance = $(document.createElement('table'));
+		// alert(count);
+		for(i=0; i<count;i++){
+			table=table+"<tr>"
+
+			table=table+"<td class='songLocat'>"
+			table=table+arrayPrompt[i].toString();
+			table=table+"</td>"
+		////////////////////////////// Choices
+			var total=0;
+			var randomz=[];
+			var countArray=0;
+			tempArray=[];
+			// alert(randomz[0]);
+			while(countArray<4){
+				test11=Math.floor((Math.random() * 4));
+				if(randomz.includes(test11)){
+					a='a';
+				}
+				else{
+					randomz.push(test11);
+					// alert(test11);
+					if(test11==0){
+						table=table+"<td class='answerTrue' >"
+						table=table+arrayAnswer[i].toString();
+						table=table+"</td>"
+						tempArray[countArray]=arrayAnswer[i].toString();
+					}
+					else{
+						// try{
+							if(i+test11<count && i!=test11){
+								table=table+"<td class='answerFalse1' >"
+								table=table+arrayAnswer[i+test11].toString();
+								// table=table+i.toString();
+								// table=table+test11.toString();
+								table=table+"</td>"
+								tempArray[countArray]=arrayAnswer[i+test11].toString();
+							}
+
+							else if(test11>i && i+test11>=count){
+									table=table+"<td class='answerFalse2' >"
+									table=table+arrayAnswer[test11-i].toString();
+									// table=table+i.toString();
+									// table=table+test11.toString();
+									table=table+"</td>"
+
+									tempArray[countArray]=arrayAnswer[test11-i].toString();
+							}
+							else if(test11<=i){
+									table=table+"<td class='answerFalse3' >"
+									table=table+arrayAnswer[i-test11].toString();
+									// table=table+i.toString();
+									// table=table+test11.toString();
+									table=table+"</td>"
+									tempArray[countArray]=arrayAnswer[i-test11].toString();
+							}
+
+						
+					}
+					countArray=countArray+1;
+				}
+
+			}
+			arrayPossibleAnswers[i]=tempArray;
+		
+			
+			
+		////////////////////
+			table=table+"<td class='image'>"
+			table=table+arrayPicture[i].toString();
+			table=table+"</td>"
+
+			table=table+"<td class='name'>"
+			table=table+arrayName[i].toString();
+			table=table+"</td>"
+
+			table=table+"</tr>"
+		}
+		table=table+"</table>"
+		// newInstance.appendTo('#placeHolder_Container');
+		$("#placeHolder_Container").append(table);
+
+		createButton();
+
+
+	}
+	function createButton(){
+		button = "<button type='button' id='nextz'>SUBMIT</button>"
+		$("#placeHolder_Container").append(button);
+
+		queuez.addSpeech('In this Game you can use the left and right arrow keys to select the choices, and up arrow key to submit the answer. To Begin Press the Up arrow key.');
+		queuez.addAnswers(arrayPossibleAnswers);
+		// queuez.addSpeech('yo.');
+		for (Qcount=0;Qcount<count;Qcount++){
+			queuez.addSong(arrayPrompt[Qcount]);
+			queuez.addTime(arrayTimed[Qcount]);
+		}
+
+
+		queuez.play();
+
+	}
+
+/*
+	function loadingVideo(){
+		 var tag = document.createElement('script');
+
+	      tag.src = "https://www.youtube.com/iframe_api";
+	      var firstScriptTag = document.getElementsByTagName('script')[0];
+	      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+	      // 3. This function creates an <iframe> (and YouTube player)
+	      //    after the API code downloads.
+	      var player;
+	      function onYouTubeIframeAPIReady() {
+	        player = new YT.Player('player', {
+	          height: '390',
+	          width: '640',
+	          videoId: 'qQrgto184Tk',
+	          events: {
+	            'onReady': onPlayerReady,
+	            'onStateChange': onPlayerStateChange
+	          }
+	        });
+	      }
+
+	      // 4. The API will call this function when the video player is ready.
+	      function onPlayerReady(event) {
+	        event.target.playVideo();
+	      }
+
+	      // 5. The API calls this function when the player's state changes.
+	      //    The function indicates that when playing a video (state=1),
+	      //    the player should play for six seconds and then stop.
+	      var done = false;
+	      function onPlayerStateChange(event) {
+	        if (event.data == YT.PlayerState.PLAYING && !done) {
+	          setTimeout(stopVideo, 6000);
+	          done = true;
+	        }
+	      }
+	      function stopVideo() {
+	        player.stopVideo();
+	      }
+	}
+*/
+var queuez=new soundPlayer();
+	Qcount=0;
+	QABCDselection=0;
+	reward=['Sounds/Reward/newRewardSound.mp3','Sounds/Reward/reward0.mp3','Sounds/Reward/reward1.mp3','Sounds/Reward/reward10.mp3','Sounds/Reward/reward11.mp3'];
+	$(document).ready(function() {
+//04/16
+		// var speech = new SpeechSynthesisUtterance('In this Game you can use the left and right arrow keys to select the choices, and up arrow key to submit the answer. To Begin Press the Up arrow key.');
+		// speech.lang = 'en-US';
+		// window.speechSynthesis.speak(speech);
+
+//
+
+
+
+
+
+//04/16
+
+// var queuez=new soundPlayer();
+
+
+
+
+// ///////////////////////////
+
+
+// queuez.addSpeech('In this Game you can use the left and right arrow keys to select the choices, and up arrow key to submit the answer. To Begin Press the Up arrow key.');
+// queuez.addAnswers(arrayPossibleAnswers);
+// // queuez.addSpeech('yo.');
+// for (Qcount=0;Qcount<count;Qcount++){
+// 	queuez.addSong(arrayPrompt[Qcount]);
+// }
+
+
+
+var QABCDselection=0;
+
+
+//key listeners
+$(document).keydown(function (e) {
+ // if (e.keyCode == 38 && queuez.diplayType=='Speech') {
+
+  	if (e.keyCode == 38) {
+ 		if(queuez.diplayType()=='Speech'){
+	 		e.preventDefault();
+	    	window.speechSynthesis.cancel();
+	    	queuez.queue.shift();
+			queuez.type.shift();
+	    	queuez.play();
+    	}
+
+		if(queuez.diplayType()=='Song'){
+
+			if (arrayPossibleAnswers[queuez.Qcount][QABCDselection]==arrayAnswer[queuez.Qcount]){
+			// if (arrayPossibleAnswers[self.Qcount][QABCDselection]==arrayAnswer[self.Qcount]){
+				// $.each($('audio'), function () {
+				//     this.pause();
+				// });
+				player.stopVideo();
+
+				try{
+					$("#newaudio").remove();
+				}
+				catch(err){
+
+				}
+
+	 	   		var audio = new Audio('Sounds/Reward/newRewardSound.mp3');
+				audio.play();
+
+				audio.onended = function() {
+				    //next song or prompt
+					
+						player.stopVideo();
+					
+					window.speechSynthesis.cancel();
+					queuez.queue.shift();
+					queuez.type.shift();
+					queuez.timed.shift();
+					queuez.Qcount+=1;
+					queuez.play();
+
+				};
+
+			}
+		}
+    }
+    if (e.keyCode == 39) {
+		//pause
+		player.pauseVideo();
+		//
+    	QABCDselection=(QABCDselection+1)%4;
+    	// alert(QABCDselection);
+    	choice=queuez.arrayPossibleAnswers[queuez.Qcount][QABCDselection].toString();
+
+    	var speech = new SpeechSynthesisUtterance(choice);
+	    speech.lang = 'en-US';
+	    window.speechSynthesis.speak(speech);
+    	e.preventDefault();
+
+
+		speech.onend = function(event) {
+			//continue
+			//$("#newaudio").
+			window.speechSynthesis.cancel();
+			player.playVideo();
+			}
+    }
+	//left
+    if (e.keyCode == 37) {
+
+		player.pauseVideo();
+
+    	testnegative=QABCDselection-1;
+    	if(testnegative<0){
+    		QABCDselection=3;
+    	}
+    	else{
+    		QABCDselection=(QABCDselection-1)%4;
+    	}
+    	choice=queuez.arrayPossibleAnswers[queuez.Qcount][QABCDselection].toString();
+    	var speech = new SpeechSynthesisUtterance(choice);
+	    speech.lang = 'en-US';
+	    window.speechSynthesis.speak(speech);
+    	e.preventDefault();
+
+		speech.onend = function(event) {
+			//continue
+			//$("#newaudio").
+			window.speechSynthesis.cancel();
+			player.playVideo();
+			}
+
+    }
+
+
+});
+
+///////////////////////////////////////////////
+		$("#nextz").click(function() {
+
+			$('#player').show();
+
+		});
+	});
+</script>
+</html>
